@@ -26,7 +26,7 @@ void *thread_func(void *id_passed) {
 
 		/* BUSY 0.5 SECONDS ??? */
 		clock_t start, end;
-		start = clock();
+		start = clock(); /* clock() returns the CPU time used so far as a clock_t */
 		end = clock();
 		while((double)(end-start)/CLOCKS_PER_SEC <= 0.5) { /* CLOCKS_PER_SEC is used to convert clock_t type to sec & CLOCKS_PER_SEC  = 1e6 */
 			end = clock();
