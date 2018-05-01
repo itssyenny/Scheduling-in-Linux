@@ -3,7 +3,7 @@ Code is written by team 48: B05902101 & B05902102
 It's about creating 2 threads. Each thread will print who is running & busy for 0.5 seconds.
 
 We will work on two types of scheduling methods:
-1. Default (non-real time) 		: sudo ./sched_test
+1. Default (non-real time) 	: sudo ./sched_test
 2. Real-time scheduling policy	: sudo ./sched_test SCHED_FIFO
 */
 #define _GNU_SOURCE
