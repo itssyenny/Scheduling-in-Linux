@@ -78,7 +78,7 @@ yield_task_weighted_rr(struct rq *rq) /* from running state to waiting state */
 	Use list_move_tail() to put the current task (rq->curr) to the end of the run list
 	and rq->weighted_rr.queue will follow the current task.
 	*/
-	list_move_tail(&rq->curr->weighted_rr_list_item, &rq->weighted_rr.queue);
+	list_move_tail(&(rq->curr)->weighted_rr_list_item, &rq->weighted_rr.queue);
 	// ...
 }
 
@@ -102,13 +102,12 @@ static struct task_struct *pick_next_task_weighted_rr(struct rq *rq) /* from wai
 	
 	// not yet implemented
 	weighted_rr_rq = &(rq->weighted_rr); /* to assign the run queue for your weighted rr to the weighted_rr_rq */
-	queue = &(weighted_rr_rq->queue); /* the actual run queue of your weighted rr scheduler */
+	queue = &(rq->weighted_rr).queue; /* the actual run queue of your weighted rr scheduler */
 	
-	if(weighted_rr_rq->nr_running == 0) return NULL /* the queue is empty & nothing to pick */
-	else {
-		/*list_first_entry(list head to take element from, type of struct is embedded in, member/the name of list_head within struct) */
-		next = list_first_entry(queue, struct task_struct, weighted_rr_list_item);
-	}
+	if(rq->weighted_rr.nr_running == 0) return NULL /* the queue is empty & nothing to pick */
+	
+	/*list_first_entry(list head to take element from, type of struct is embedded in, member/the name of list_head within struct) */
+	next = list_first_entry(queue, struct task_struct, weighted_rr_list_item);
 	// ...
 	
 	/* you need to return the selected task IN WEIGHTED_RR.queue here */
@@ -211,17 +210,14 @@ static void task_tick_weighted_rr(struct rq *rq, struct task_struct *p,int queue
 	// not yet implemented
 	/* First, decrement the task_time_slice value of the task p; task_time_slice records the consumption of time slice of task p */
 	p->task_time_slice--; 
-	if(p->task_time_slice) return;
-	else if(p->task_time_slice == 0) { /* once task_time_slice value of the task p = 0 */
+	if(p->task_time_slice == 0) { /* once task_time_slice value of the task p = 0 */
 
 		/* reset the task_time_slice of task p */
 		p->task_time_slice = p->weighted_time_slice; /* how much time should be supplied when reset task_time_slice is accoding to the weighted_time_slice */
 		
 		/* requeue to the end of queue if we are the only element on the queue */
-		if(p->weighted_rr_list_item.prev != p->weighted_rr_list_item.next) {
-			set_tsk_need_resched(p);
-			requeue_task_weighted_rr(rq, p); /*yield/requeue the task p */	
-		}
+		set_tsk_need_resched(p);
+		requeue_task_weighted_rr(rq, p); /*yield/requeue the task p */	
 	}
 
 	// ...
