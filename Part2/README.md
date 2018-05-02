@@ -1,1 +1,1 @@
-# Modify Weighted Round Robin Schedulling
+# Modify Weighted Round Robin Scheduling
