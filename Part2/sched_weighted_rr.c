@@ -36,7 +36,7 @@ static void enqueue_task_weighted_rr(struct rq *rq, struct task_struct *p, int w
 	/* list_add_tail(struct list_head *new task to be added, struct list_head *head)
 		Insert new entry (prev) before the specified head : new entry <-> head
 	*/
-	list_add_tail(&(p->weighted_rr_list_item), &((rq->weighted_rr).queue));
+	list_add_tail(&p->weighted_rr_list_item, &rq->weighted_rr.queue);
 	rq->weighted_rr.nr_running++; /* increment the number of processes that are in the run queue now */
 	// ...
 }
@@ -49,7 +49,7 @@ static void dequeue_task_weighted_rr(struct rq *rq, struct task_struct *p, int s
 	/* list_del(struct list_head *entry) ; entry = the pointer to the node address which we want to delete
 		Delete the task, that has just been inserted in p, from run queue 
 	*/
-	list_del(&(p->weighted_rr_list_item));
+	list_del(&p->weighted_rr_list_item);
 	rq->weighted_rr.nr_running--; /* decrement the number of processes that are in the run queue now */
 	// ...
 }
@@ -78,7 +78,7 @@ yield_task_weighted_rr(struct rq *rq) /* from running state to waiting state */
 	Use list_move_tail() to put the current task (rq->curr) to the end of the run list
 	and rq->weighted_rr.queue will follow the current task.
 	*/
-	list_move_tail(&rq->curr, &rq->weighted_rr.queue);
+	list_move_tail(&rq->curr->weighted_rr_list_item, &rq->weighted_rr.queue);
 	// ...
 }
 
